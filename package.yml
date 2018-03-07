@@ -1,0 +1,41 @@
+---
+- hosts: install
+  remote_user: root
+  tasks:
+      - name: epel-release
+        yum: name=epel-release state=installed
+
+      - name: upgrade all packages
+        yum:
+          name: '*'
+          state: latest
+
+      - name: install php modules
+        yum: name={{ item }} enablerepo=epel state=installed
+        with_items:
+          - php-gd
+          - php-mcrypt
+          - php-curl
+
+      #- name: Download ioncubeloader x64
+      #  get_url:
+      #    url: http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz 
+      #    dest: http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz 
+      #    mode: 0644
+
+      - name: Ioncubeloader install
+        unarchive:
+          src: http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+          dest: /usr/local
+          remote_src: yes
+
+      - template:
+          src: ioncube.ini.j2
+          dest: /etc/php.d/ioncube.ini
+          owner: root
+          group: root
+          mode: '0644'    
+
+      - service:
+          name: httpd
+          state: restarted
