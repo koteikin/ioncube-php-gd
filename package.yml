@@ -16,7 +16,7 @@
           - php-gd
           - php-mcrypt
           - php-curl
-	  - php-soap
+          - php-soap
           - php-bcmath
 
       #- name: Download ioncubeloader x64
